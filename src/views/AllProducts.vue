@@ -1,26 +1,22 @@
 <script setup>
+import AppLoader from '@/components/AppLoader.vue'
 import ProductCard from '@/components/ProductCard.vue'
 import store from '@/store'
 import { onMounted, ref } from 'vue'
 
-// const loading = ref('false')
+const isLoading = ref(true)
 let products = ref([])
 
 onMounted(async () => {
-  // loading.value('true')
-
   await store.dispatch('fetchProducts')
   products.value = store.state.products
-  // loading.value('false')
-
-  console.log(products.value)
+  isLoading.value = store.state.isLoading
 })
 </script>
 
 <template>
-  <h1>AllProducts is here</h1>
-  <br />
-  <div v-if="products.length" class="products-list">
+  <AppLoader v-if="isLoading" :isLoading="isLoading" :isFuisFullPageLoader="true" />
+  <div v-if="products.length && !isLoading" class="products-list">
     <div v-for="product in products" :key="product.id">
       <ProductCard v-if="product" :product="product" />
     </div>
@@ -31,7 +27,7 @@ onMounted(async () => {
 .products-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 3rem;
 }
 </style>

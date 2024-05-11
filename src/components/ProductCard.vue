@@ -1,16 +1,3 @@
-<template>
-  <div class="product-card">
-    <img :src="product.image" :alt="product.title" class="thumbnail" />
-
-    <div class="content">
-      <h2>{{ product.title.slice(0, 20) }}</h2>
-      <p>{{ shortenedDescription }}</p>
-      <p>{{ product.price }}</p>
-    </div>
-    <button class="add-to-cart-btn" @click="addToCart()">Add to Cart</button>
-  </div>
-</template>
-
 <script setup>
 import { computed } from 'vue'
 
@@ -23,6 +10,19 @@ const shortenedDescription = computed(() => {
   return description
 })
 </script>
+
+<template>
+  <div class="product-card">
+    <img :src="product.image" :alt="product.title" class="thumbnail" />
+
+    <div class="content">
+      <h2>{{ product.title.slice(0, 20) }}</h2>
+      <p>{{ shortenedDescription }}</p>
+      <p>{{ product.price }}</p>
+    </div>
+    <button class="add-to-cart-btn" @click="addToCart()">Add to Cart</button>
+  </div>
+</template>
 
 <style scoped>
 .product-card {
@@ -40,7 +40,7 @@ const shortenedDescription = computed(() => {
 
 .product-card:hover {
   scale: 1.03;
-  transition: all 0.2s linear;
+  transition: all 0.2s ease-in-out;
 }
 .thumbnail {
   width: 100%;
