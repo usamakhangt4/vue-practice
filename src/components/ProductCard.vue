@@ -9,19 +9,29 @@ const shortenedDescription = computed(() => {
   if (description.length > 100) return description.slice(0, 100) + '...'
   return description
 })
+
+// const openProductDetailsPage = (productId) => {
+//   // logic to open the product details page
+// }
+
+const addToCart = () => {
+  // logic to add the product to the cart
+}
 </script>
 
 <template>
-  <div class="product-card">
-    <img :src="product.image" :alt="product.title" class="thumbnail" />
+  <RouterLink :to="`/product/${product.id}`" class="product-card-link">
+    <div class="product-card">
+      <img :src="product.image" :alt="product.title" class="thumbnail" />
 
-    <div class="content">
-      <h2>{{ product.title.slice(0, 20) }}</h2>
-      <p>{{ shortenedDescription }}</p>
-      <p>{{ product.price }}</p>
-    </div>
-    <button class="add-to-cart-btn" @click="addToCart()">Add to Cart</button>
-  </div>
+      <div class="content">
+        <h2>{{ product.title.slice(0, 20) }}</h2>
+        <p>{{ shortenedDescription }}</p>
+        <p>{{ product.price }}</p>
+      </div>
+      <button class="add-to-cart-btn" @click="addToCart()">Add to Cart</button>
+    </div></RouterLink
+  >
 </template>
 
 <style scoped>
@@ -63,5 +73,12 @@ const shortenedDescription = computed(() => {
   margin: auto auto 10px;
   align-self: flex-end;
   width: calc(100% - 2rem);
+}
+
+.product-card-link {
+  text-decoration: none;
+  color: white;
+  display: inline-block;
+  padding: 0;
 }
 </style>
