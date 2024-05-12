@@ -1,8 +1,14 @@
 <script setup>
-import { computed } from 'vue'
+import store from '@/store'
+import { computed, ref } from 'vue'
 
 const props = defineProps(['product'])
 const { product } = props
+
+const cartItems = ref(store.state.cartItems)
+const isAddedToCart = computed(() => {
+  return cartItems.value.some((item) => item.id === props.product.id)
+})
 
 const shortenedDescription = computed(() => {
   const description = product.description
@@ -10,18 +16,20 @@ const shortenedDescription = computed(() => {
   return description
 })
 
-// const openProductDetailsPage = (productId) => {
-//   // logic to open the product details page
-// }
+const addToCart = (event) => {
+  event.stopPropagation()
+  store.commit('addToCart', product)
+}
 
-const addToCart = () => {
-  // logic to add the product to the cart
+const removeFromCart = (event) => {
+  event.stopPropagation()
+  store.commit('removeFromCart', product)
 }
 </script>
 
 <template>
-  <RouterLink :to="`/product/${product.id}`" class="product-card-link">
-    <div class="product-card">
+  <div class="product-card">
+    <RouterLink :to="`/product/${product.id}`" class="product-card-link">
       <img :src="product.image" :alt="product.title" class="thumbnail" />
 
       <div class="content">
@@ -29,9 +37,14 @@ const addToCart = () => {
         <p>{{ shortenedDescription }}</p>
         <p>{{ product.price }}</p>
       </div>
-      <button class="add-to-cart-btn" @click="addToCart()">Add to Cart</button>
-    </div></RouterLink
-  >
+    </RouterLink>
+    <button
+      :class="!isAddedToCart ? 'add-to-cart-btn' : 'remove-from-cart-btn'"
+      @click="!isAddedToCart ? addToCart($event) : removeFromCart($event)"
+    >
+      {{ !isAddedToCart ? 'Add to Cart' : 'Remove from Cart ' }}
+    </button>
+  </div>
 </template>
 
 <style scoped>
@@ -66,6 +79,18 @@ const addToCart = () => {
 .add-to-cart-btn {
   padding: 0.5rem 1rem;
   background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: auto auto 10px;
+  align-self: flex-end;
+  width: calc(100% - 2rem);
+}
+
+.remove-from-cart-btn {
+  padding: 0.5rem 1rem;
+  background-color: #f44336;
   color: white;
   border: none;
   border-radius: 4px;

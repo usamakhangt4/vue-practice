@@ -1,7 +1,7 @@
 <script setup>
 import AppLoader from '@/components/AppLoader.vue'
 import store from '@/store'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const props = defineProps(['productId'])
 const { productId } = props
@@ -9,22 +9,41 @@ const { productId } = props
 const isLoading = ref(true)
 const product = ref({})
 
+const isAddedToCart = computed(() => {
+  return store.state.cartItems.some((item) => item.id === product.value.id)
+})
+
 onMounted(async () => {
   await store.dispatch('fetchSingleProduct', productId)
   product.value = store.state.productDetails
   isLoading.value = store.state.isLoading
 })
+
+const addToCart = () => {
+  store.commit('addToCart', product.value)
+}
+
+const removeFromCart = () => {
+  store.commit('removeFromCart', product.value)
+}
 </script>
 
 <template>
   <AppLoader v-if="isLoading" :isLoading="isLoading" :isFullPageLoader="true" />
+
+  <router-link to="/" class="back-to-home">Back to Home</router-link>
 
   <div v-if="product && !isLoading" class="product-details-container">
     <h2 class="product-title">{{ product.title }}</h2>
     <img :src="product.image" :alt="product.title" class="product-image" />
     <p class="product-description">{{ product.description }}</p>
     <p class="product-price">${{ product.price }}</p>
-    <button class="add-to-cart-btn" @click="addToCart()">Add to Cart</button>
+    <button
+      :class="!isAddedToCart ? 'add-to-cart-btn' : 'remove-from-cart-btn'"
+      @click="!isAddedToCart ? addToCart() : removeFromCart()"
+    >
+      {{ !isAddedToCart ? 'Add to Cart' : 'Remove from Cart ' }}
+    </button>
   </div>
 </template>
 
@@ -34,9 +53,6 @@ onMounted(async () => {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-
-  /* width: 300px; */
-  /* height: 450px; */
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem;
@@ -75,6 +91,31 @@ onMounted(async () => {
   cursor: pointer;
   margin: auto auto 10px;
   align-self: flex-end;
+  width: calc(100% - 2rem);
+}
+
+.remove-from-cart-btn {
+  padding: 0.5rem 1rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: auto auto 10px;
+  align-self: flex-end;
+  width: calc(100% - 2rem);
+}
+
+.back-to-home {
+  /* a small button on the left */
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: auto auto 10px;
+  align-self: flex-start;
   width: calc(100% - 2rem);
 }
 </style>

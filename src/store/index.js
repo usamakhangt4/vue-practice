@@ -4,7 +4,9 @@ export default createStore({
   state: {
     products: [],
     productDetails: {},
-    isLoading: true
+    isLoading: true,
+    cartCount: 0,
+    cartItems: []
   },
   mutations: {
     setProducts(state, products) {
@@ -14,6 +16,26 @@ export default createStore({
     setProductDetails(state, product) {
       state.productDetails = product
       this.state.isLoading = false
+    },
+    addToCart(state, product) {
+      const indexInCart = state.cartItems.map((item) => item.id).indexOf(product.id)
+      if (indexInCart !== -1) {
+        return
+      }
+      state.cartItems.push(product)
+      state.cartCount++
+    },
+    removeFromCart(state, product) {
+      const indexInCart = state.cartItems.map((item) => item.id).indexOf(product.id)
+      if (indexInCart === -1) {
+        return
+      }
+      state.cartItems.splice(indexInCart, 1)
+      state.cartCount--
+    },
+    clearCart(state) {
+      state.cartItems = []
+      state.cartCount = 0
     }
   },
   actions: {

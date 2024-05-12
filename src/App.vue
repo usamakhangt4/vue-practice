@@ -10,6 +10,9 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
     <nav>
       <RouterLink to="/" activeClass="green" class="nav-link">Home</RouterLink>
+      <RouterLink to="/cart" activeClass="green" class="nav-link"
+        >Cart {{ $store.state.cartCount }}</RouterLink
+      >
     </nav>
   </header>
 
