@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps(['isLoading', 'isFullPageLoader'])
-const { isFullPageLoader, isLoading = true } = props
+const { isFullPageLoader = true, isLoading = true } = props
 </script>
 
 <template>

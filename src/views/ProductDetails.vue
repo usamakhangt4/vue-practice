@@ -1,28 +1,30 @@
 <script setup>
+import AppLoader from '@/components/AppLoader.vue'
+import store from '@/store'
 import { onMounted, ref } from 'vue'
 
 const props = defineProps(['productId'])
 const { productId } = props
 
-const product = ref(null)
-onMounted(() => {
-  getProduct()
+const isLoading = ref(true)
+const product = ref({})
+
+onMounted(async () => {
+  await store.dispatch('fetchSingleProduct', productId)
+  product.value = store.state.productDetails
+  isLoading.value = store.state.isLoading
 })
-async function getProduct() {
-  const response = await fetch(`https://fakestoreapi.com/products/${productId}`)
-  product.value = await response.json()
-}
 </script>
 
 <template>
-  <div>
-    <div v-if="product" class="product-details-container">
-      <h2 class="product-title">{{ product.title }}</h2>
-      <img :src="product.image" :alt="product.title" class="product-image" />
-      <p class="product-description">{{ product.description }}</p>
-      <p class="product-price">${{ product.price }}</p>
-      <button class="add-to-cart-btn" @click="addToCart()">Add to Cart</button>
-    </div>
+  <AppLoader v-if="isLoading" :isLoading="isLoading" :isFullPageLoader="true" />
+
+  <div v-if="product && !isLoading" class="product-details-container">
+    <h2 class="product-title">{{ product.title }}</h2>
+    <img :src="product.image" :alt="product.title" class="product-image" />
+    <p class="product-description">{{ product.description }}</p>
+    <p class="product-price">${{ product.price }}</p>
+    <button class="add-to-cart-btn" @click="addToCart()">Add to Cart</button>
   </div>
 </template>
 

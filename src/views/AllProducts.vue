@@ -5,7 +5,7 @@ import store from '@/store'
 import { onMounted, ref } from 'vue'
 
 const isLoading = ref(true)
-let products = ref([])
+const products = ref([])
 
 onMounted(async () => {
   await store.dispatch('fetchProducts')
@@ -15,7 +15,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <AppLoader v-if="isLoading" :isLoading="isLoading" :isFuisFullPageLoader="true" />
+  <AppLoader v-if="isLoading" :isLoading="isLoading" :isFullPageLoader="true" />
   <div v-if="products.length && !isLoading" class="products-list">
     <div v-for="product in products" :key="product.id">
       <ProductCard v-if="product" :product="product" />
